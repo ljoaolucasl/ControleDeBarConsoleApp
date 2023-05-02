@@ -91,11 +91,11 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         {
             Console.Clear();
 
-            MostrarCabecalho(80, "Contas", ConsoleColor.White);
+            MostrarCabecalho(90, "Contas", ConsoleColor.White);
             Console.ForegroundColor = ConsoleColor.White;
             string espacamento = "{0, -5} │ {1, -15} │ {2, -30} │ {3, -15} │ {4, -15}";
             Console.WriteLine(espacamento, "ID", "Número da Mesa", "Garçom", "Valor Total", "Estado");
-            Console.WriteLine("".PadRight(82, '―'));
+            Console.WriteLine("".PadRight(92, '―'));
             Console.ResetColor();
 
             foreach (Conta conta in repositorioConta.ListaOrganizadaPorEstado())
@@ -117,11 +117,11 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         {
             Console.Clear();
 
-            MostrarCabecalho(80, "Contas", ConsoleColor.White);
+            MostrarCabecalho(90, "Contas", ConsoleColor.White);
             Console.ForegroundColor = ConsoleColor.White;
             string espacamento = "{0, -5} │ {1, -15} │ {2, -30} │ {3, -15} │ {4, -15}";
             Console.WriteLine(espacamento, "ID", "Número da Mesa", "Garçom", "Valor Total", "Estado");
-            Console.WriteLine("".PadRight(82, '―'));
+            Console.WriteLine("".PadRight(92, '―'));
             Console.ResetColor();
 
             foreach (Conta conta in repositorioConta.ObterListaRegistros())

@@ -6,6 +6,6 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloMesa
     {
         public int numero;
         public string setor;
-        public bool ocupado;
+        public bool ocupado = false;
     }
 }

@@ -24,19 +24,9 @@ namespace Prova01_ControleDeBar.ConsoleApp
 
             repositorioGarcom.PreCadastrarGarcons();
 
-            Estoque e1 = new();
-            repositorioEstoque.PreCadastrarTestes(e1);
-            Estoque e2 = new();
-            repositorioEstoque.PreCadastrarTestes(e2);
-            Estoque e3 = new();
-            repositorioEstoque.PreCadastrarTestes(e3);
+            repositorioEstoque.PreCadastrarEstoques();
 
-            Mesa m1 = new();
-            repositorioMesa.PreCadastrarTestes(m1);
-            Mesa m2 = new();
-            repositorioMesa.PreCadastrarTestes(m2);
-            Mesa m3 = new();
-            repositorioMesa.PreCadastrarTestes(m3);
+            repositorioMesa.PreCadastrarMesas();
 
             bool continuar = true;
 
