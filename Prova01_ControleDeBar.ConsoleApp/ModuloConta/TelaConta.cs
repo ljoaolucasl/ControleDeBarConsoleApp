@@ -46,8 +46,9 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 Console.WriteLine($"(4)Editar {tipo}");
                 Console.WriteLine($"(5)Excluir {tipo}");
                 Console.WriteLine($"(6)Fechar {tipo}");
-                Console.WriteLine($"(7)Visualizar {tipo} em Aberto");
-                Console.WriteLine($"(8)Visualizar Total Faturado Hoje");
+                Console.WriteLine($"(7)Visualizar Pedidos");
+                Console.WriteLine($"(8)Visualizar {tipo} em Aberto");
+                Console.WriteLine($"(9)Visualizar Total Faturado Hoje");
                 PulaLinha();
                 Console.WriteLine("(S)Sair");
                 PulaLinha();
@@ -104,8 +105,9 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 case "4": EditarRegistro(tipoRepositorio); break;
                 case "5": ExcluirRegistro(tipoRepositorio); break;
                 case "6": FecharConta(); break;
-                case "7": VisualizarContaEmAberto(); Console.ReadLine(); break;
-                case "8": VisualizarTotalFaturadoDia(); Console.ReadLine(); break;
+                case "7": VisualizarPedidos(); Console.ReadLine(); break;
+                case "8": VisualizarContaEmAberto(); Console.ReadLine(); break;
+                case "9": VisualizarTotalFaturadoDia(); Console.ReadLine(); break;
                 case "S": return false;
                 default: break;
             }
@@ -282,6 +284,45 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 MensagemColor($"\nNão foi selecionado uma conta, verifique se há ao menos uma conta em Aberto\n", ConsoleColor.DarkYellow);
 
             Console.ReadLine();
+        }
+
+        private void VisualizarPedidos()
+        {
+            Conta conta = ObterConta();
+
+            if (conta != null)
+            {
+
+                Console.Clear();
+
+                MostrarCabecalho(80, $"Pedidos Mesa #{conta.mesa.numero}", ConsoleColor.DarkYellow);
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                string espacamento = "{0, -5} │ {1, -20} │ {2, -15} │ {3, -15} │ {4, -15}";
+                Console.WriteLine(espacamento, "ID", "Produto", "Quantidade", "Valor Uni.", "Valor Total");
+                Console.WriteLine("".PadRight(82, '―'));
+                Console.ResetColor();
+
+                foreach (Pedido pedido in conta.pedidos)
+                {
+                    conta.valorTotal = repositorioConta.CalcularValorTotal(conta);
+
+                    double totalQtdValor = pedido.estoque.valor * pedido.quantidade;
+
+                    TextoZebrado();
+
+                    Console.WriteLine(espacamento, "#" + pedido.id, pedido.estoque.nome, pedido.quantidade, "R$" + pedido.estoque.valor, "R$" + totalQtdValor);
+                }
+
+                Console.ResetColor();
+                zebrado = true;
+
+                PulaLinha();
+                Console.WriteLine("TOTAL: R$" + conta.valorTotal);
+
+                PulaLinha();
+            } 
+            else
+                MensagemColor($"\nNão foi selecionado uma conta, verifique se há ao menos uma conta cadastrada\n", ConsoleColor.DarkYellow);
         }
 
         private void VisualizarTotalFaturadoDia()
