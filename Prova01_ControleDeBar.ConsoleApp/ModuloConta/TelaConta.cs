@@ -41,13 +41,20 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 Console.ResetColor();
                 PulaLinha();
                 Console.WriteLine($"(1)Visualizar {tipo}");
-                Console.WriteLine($"(2)Registrar Pedido");
-                Console.WriteLine($"(3)Adicionar {tipo}");
-                Console.WriteLine($"(4)Editar {tipo}");
-                Console.WriteLine($"(5)Excluir {tipo}");
-                Console.WriteLine($"(6)Fechar {tipo}");
-                Console.WriteLine($"(7)Visualizar Pedidos");
-                Console.WriteLine($"(8)Visualizar {tipo} em Aberto");
+                Console.WriteLine($"(2)Adicionar {tipo}");
+                Console.WriteLine($"(3)Editar {tipo}");
+                Console.WriteLine($"(4)Excluir {tipo}");
+                Console.WriteLine($"(5)Fechar {tipo}");
+                Console.WriteLine($"(6)Visualizar {tipo} em Aberto");
+                PulaLinha();
+
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.WriteLine($"Controle de Pedidos");
+                Console.ResetColor();
+                PulaLinha();
+                Console.WriteLine($"(7)Registrar Pedido");
+                Console.WriteLine($"(8)Visualizar Pedidos");
+                PulaLinha();
                 Console.WriteLine($"(9)Visualizar Total Faturado Hoje");
                 PulaLinha();
                 Console.WriteLine("(S)Sair");
@@ -100,13 +107,13 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             switch (entrada.ToUpper())
             {
                 case "1": VisualizarRegistro(); Console.ReadLine(); break;
-                case "2": RegistrarPedido(); break;
-                case "3": AdicionarRegistro(tipoRepositorio); break;
-                case "4": EditarRegistro(tipoRepositorio); break;
-                case "5": ExcluirRegistro(tipoRepositorio); break;
-                case "6": FecharConta(); break;
-                case "7": VisualizarPedidos(); Console.ReadLine(); break;
-                case "8": VisualizarContaEmAberto(); Console.ReadLine(); break;
+                case "2": AdicionarRegistro(tipoRepositorio); break;
+                case "3": EditarRegistro(tipoRepositorio); break;
+                case "4": ExcluirRegistro(tipoRepositorio); break;
+                case "5": FecharConta(); break;
+                case "6": VisualizarContaEmAberto(); Console.ReadLine(); break;
+                case "7": RegistrarPedido(); break;
+                case "8": VisualizarPedidos(); Console.ReadLine(); break;
                 case "9": VisualizarTotalFaturadoDia(); Console.ReadLine(); break;
                 case "S": return false;
                 default: break;
@@ -295,8 +302,8 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
                 Console.Clear();
 
-                MostrarCabecalho(80, $"Pedidos Mesa #{conta.mesa.numero}", ConsoleColor.DarkYellow);
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                MostrarCabecalho(80, $"Pedidos Mesa #{conta.mesa.numero}", ConsoleColor.DarkCyan);
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 string espacamento = "{0, -5} │ {1, -20} │ {2, -15} │ {3, -15} │ {4, -15}";
                 Console.WriteLine(espacamento, "ID", "Produto", "Quantidade", "Valor Uni.", "Valor Total");
                 Console.WriteLine("".PadRight(82, '―'));
