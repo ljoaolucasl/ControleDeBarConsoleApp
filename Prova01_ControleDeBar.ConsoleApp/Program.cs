@@ -2,7 +2,6 @@
 using Prova01_ControleDeBar.ConsoleApp.ModuloEstoque;
 using Prova01_ControleDeBar.ConsoleApp.ModuloGarcom;
 using Prova01_ControleDeBar.ConsoleApp.ModuloMesa;
-using Prova01_ControleDeBar.ConsoleApp.ModuloPedido;
 
 namespace Prova01_ControleDeBar.ConsoleApp
 {
@@ -36,8 +35,8 @@ namespace Prova01_ControleDeBar.ConsoleApp
 
                 switch (ObterEscolha().ToUpper())
                 {
-                    case "1": telaConta.MostrarMenu("Contas", ConsoleColor.DarkCyan, repositorioConta); break;
-                    case "2": telaMesa.MostrarMenu("Mesas", ConsoleColor.DarkGreen, repositorioMesa); break;
+                    case "1": telaConta.MostrarMenu("Contas", ConsoleColor.DarkYellow, repositorioConta); break;
+                    case "2": telaMesa.MostrarMenu("Mesas", ConsoleColor.DarkCyan, repositorioMesa); break;
                     case "3": telaGarcom.MostrarMenu("Garçom", ConsoleColor.DarkYellow, repositorioGarcom); break;
                     case "4": telaEstoque.MostrarMenu("Estoque", ConsoleColor.DarkMagenta, repositorioEstoque); break;
                     case "S": continuar = false; break;

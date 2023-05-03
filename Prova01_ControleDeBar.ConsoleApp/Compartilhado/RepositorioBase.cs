@@ -1,5 +1,4 @@
-﻿using Prova01_ControleDeBar.ConsoleApp.ModuloConta;
-using System.Collections;
+﻿using System.Collections;
 
 namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
 {

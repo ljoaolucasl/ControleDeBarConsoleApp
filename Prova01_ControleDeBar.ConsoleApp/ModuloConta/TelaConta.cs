@@ -1,5 +1,4 @@
 ﻿using Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado;
-using Microsoft.Win32;
 using Prova01_ControleDeBar.ConsoleApp.ModuloEstoque;
 using Prova01_ControleDeBar.ConsoleApp.ModuloGarcom;
 using Prova01_ControleDeBar.ConsoleApp.ModuloMesa;
@@ -67,7 +66,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 case "2": AdicionarRegistro(tipoRepositorio); break;
                 case "3": EditarRegistro(tipoRepositorio); break;
                 case "4": ExcluirRegistro(tipoRepositorio); break;
-                case "5": FecharConta(tipoRepositorio); break;
+                case "5": FecharConta(); break;
                 case "6": VisualizarContaEmAberto(); Console.ReadLine(); break;
                 case "7": VisualizarTotalFaturadoDia(); Console.ReadLine(); break;
                 case "S": return false;
@@ -91,10 +90,11 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         {
             Console.Clear();
 
-            MostrarCabecalho(90, "Contas", ConsoleColor.White);
-            Console.ForegroundColor = ConsoleColor.White;
-            string espacamento = "{0, -5} │ {1, -15} │ {2, -30} │ {3, -15} │ {4, -15}";
-            Console.WriteLine(espacamento, "ID", "Número da Mesa", "Garçom", "Valor Total", "Estado");
+            MostrarCabecalho(90, "Contas", ConsoleColor.DarkYellow);
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            string espacamento = "{0, -5} │ {1, -15} │ {2, -30} │ {3, -15} │ ";
+            Console.Write(espacamento, "ID", "Número da Mesa", "Garçom", "Valor Total");
+            Console.WriteLine("{0, -15}", "Estado");
             Console.WriteLine("".PadRight(92, '―'));
             Console.ResetColor();
 
@@ -104,7 +104,15 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
                 TextoZebrado();
 
-                Console.WriteLine(espacamento, "#" + conta.id, conta.mesa.numero, conta.garcom.nome, "R$" + conta.valorTotal, conta.estado == true ? "ABERTO" : "FECHADO");
+                Console.Write(espacamento, "#" + conta.id, conta.mesa.numero, conta.garcom.nome, "R$" + conta.valorTotal);
+
+                if (conta.estado) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+
+                else { Console.ForegroundColor = ConsoleColor.Green; }
+
+                Console.WriteLine("{0, -15}", conta.estado == true ? "ABERTO" : "FATURADO");
+
+                Console.ForegroundColor = ConsoleColor.White;
             }
 
             Console.ResetColor();
@@ -117,10 +125,11 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         {
             Console.Clear();
 
-            MostrarCabecalho(90, "Contas", ConsoleColor.White);
-            Console.ForegroundColor = ConsoleColor.White;
-            string espacamento = "{0, -5} │ {1, -15} │ {2, -30} │ {3, -15} │ {4, -15}";
-            Console.WriteLine(espacamento, "ID", "Número da Mesa", "Garçom", "Valor Total", "Estado");
+            MostrarCabecalho(90, "Contas", ConsoleColor.DarkYellow);
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            string espacamento = "{0, -5} │ {1, -15} │ {2, -30} │ {3, -15} │ ";
+            Console.Write(espacamento, "ID", "Número da Mesa", "Garçom", "Valor Total");
+            Console.WriteLine("{0, -15}", "Estado");
             Console.WriteLine("".PadRight(92, '―'));
             Console.ResetColor();
 
@@ -130,7 +139,15 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
                 TextoZebrado();
 
-                Console.WriteLine(espacamento, "#" + conta.id, conta.mesa.numero, conta.garcom.nome, "R$" + conta.valorTotal, conta.estado == true ? "ABERTO" : "FECHADO");
+                Console.Write(espacamento, "#" + conta.id, conta.mesa.numero, conta.garcom.nome, "R$" + conta.valorTotal);
+
+                if (conta.estado) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+
+                else { Console.ForegroundColor = ConsoleColor.Green; }
+
+                Console.WriteLine("{0, -15}", conta.estado == true ? "ABERTO" : "FATURADO");
+
+                Console.ForegroundColor = ConsoleColor.White;
             }
 
             Console.ResetColor();
@@ -145,18 +162,19 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             RepositorioBase repositorio = tipoRepositorio;
 
-            EntidadeBase registro = ObterCadastro();
+            Conta conta = (Conta)ObterCadastro();
 
-            if (ValidaValorNull(registro))
+            if (ValidaValorNull(conta))
             {
-                if (ValidaLimiteEstoque((Conta)registro))
-                {
-                    repositorio.Adicionar(registro);
+                repositorio.Adicionar(conta);
 
-                    VisualizarRegistro();
+                conta.pedido.estoque.quantidade -= conta.pedido.quantidade;
 
-                    MensagemColor($"\nCadastro adicionado com sucesso!", ConsoleColor.Green);
-                }
+                conta.mesa.ocupado = true;
+
+                VisualizarRegistro();
+
+                MensagemColor($"\nCadastro adicionado com sucesso!", ConsoleColor.Green);
             }
             else
                 MensagemColor($"\nCadastro incompleto, retornando ao Menu . . .", ConsoleColor.DarkYellow);
@@ -170,20 +188,25 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
             {
-                EntidadeBase registroAntigo = ObterId(tipoRepositorio, "Digite o ID do Item que deseja editar: ");
+                Conta contaAntiga = (Conta)ObterId(tipoRepositorio, "Digite o ID do Item que deseja editar: ");
 
-                EntidadeBase registroAtualizado = ObterCadastro();
+                Conta contaAtualizada = (Conta)ObterCadastro();
 
-                if (ValidaValorNull(registroAtualizado))
+                if (ValidaValorNull(contaAtualizada))
                 {
-                    if (ValidaLimiteEstoque((Conta)registroAtualizado))
-                    {
-                        tipoRepositorio.Editar(registroAntigo, registroAtualizado);
+                    contaAntiga.pedido.estoque.quantidade += contaAntiga.pedido.quantidade;
 
-                        VisualizarRegistro();
+                    contaAntiga.mesa.ocupado = false;
 
-                        MensagemColor("\nItem editado com sucesso!", ConsoleColor.Green);
-                    }
+                    tipoRepositorio.Editar(contaAntiga, contaAtualizada);
+
+                    contaAtualizada.pedido.estoque.quantidade -= contaAtualizada.pedido.quantidade;
+
+                    contaAtualizada.mesa.ocupado = true;
+
+                    VisualizarRegistro();
+
+                    MensagemColor("\nItem editado com sucesso!", ConsoleColor.Green);
                 }
                 else
                     MensagemColor($"\nCadastro incompleto, retornando ao Menu . . .", ConsoleColor.DarkYellow);
@@ -192,17 +215,41 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             Console.ReadLine();
         }
 
-        protected virtual void FecharConta(RepositorioBase tipoRepositorio)
+        protected override void ExcluirRegistro(RepositorioBase tipoRepositorio)
         {
             VisualizarRegistro();
 
-            if (ValidaListaVazia(repositorioConta.ObterListaRegistros()))
+            if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
             {
-                Conta conta = (Conta)ObterId(repositorioConta, "Digite o ID da Conta que deseja fechar: ");
+                Conta conta = (Conta)ObterId(tipoRepositorio, "Digite o ID do Item que deseja excluir: ");
+
+                conta.pedido.estoque.quantidade += conta.pedido.quantidade;
+
+                conta.mesa.ocupado = false;
+
+                tipoRepositorio.Excluir(conta);
+
+                VisualizarRegistro();
+
+                MensagemColor("\nItem excluído com sucesso!", ConsoleColor.Green);
+            }
+
+            Console.ReadLine();
+        }
+
+        protected virtual void FecharConta()
+        {
+            VisualizarContaEmAberto();
+
+            if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstado()))
+            {
+                Conta conta = (Conta)ObterIdContasAbertas("Digite o ID da Conta que deseja fechar: ");
+
+                conta.mesa.ocupado = false;
 
                 repositorioConta.Fechar(conta);
 
-                VisualizarRegistro();
+                VisualizarContaEmAberto();
 
                 MensagemColor("\nConta fechada com sucesso!", ConsoleColor.Green);
             }
@@ -210,13 +257,41 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             Console.ReadLine();
         }
 
+        protected EntidadeBase ObterIdContasAbertas(string mensagem)
+        {
+            Conta conta;
+
+            if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstado()))
+            {
+                while (true)
+                {
+                    int idEscolhido = ValidaNumero(mensagem);
+
+                    conta = (Conta)repositorioConta.SelecionarIdContasAbertas(idEscolhido);
+
+                    if (conta == null)
+                        MensagemColor("Atenção, apenas ID`s existentes\n", ConsoleColor.Red);
+
+                    else
+                        return conta;
+                }
+            }
+            return null;
+        }
+
         protected override EntidadeBase ObterCadastro()
         {
-            Pedido pedido = new()
+            Pedido pedido = new();
+
+            pedido.estoque = ObterEstoque();
+            do
             {
-                estoque = ObterEstoque(),
-                quantidade = ObterQuantidade()
-            };
+                pedido.quantidade = ObterQuantidade();
+
+                if (pedido.quantidade > pedido.estoque.quantidade)
+                    MensagemColor($"\nQuantidade pedida foi acima do nosso estoque . . . (qtd. disponível: {pedido.estoque.quantidade})\n", ConsoleColor.DarkYellow);
+
+            } while (pedido.quantidade > pedido.estoque.quantidade);
 
             Conta conta = new()
             {
@@ -270,17 +345,6 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 garcom = (Garcom)ObterId(repositorioGarcom, "Digite o ID do Garcom: ");
             }
             return garcom;
-        }
-
-        private bool ValidaLimiteEstoque(Conta conta)
-        {
-            if (conta.pedido.quantidade > conta.pedido.estoque.quantidade)
-            {
-                MensagemColor($"\nQuantidade pedida foi acima do nosso Estoque . . . (qtd. disponível: {conta.pedido.estoque.quantidade})", ConsoleColor.DarkYellow);
-                return false;
-            }
-            else
-                return true;
         }
     }
 }

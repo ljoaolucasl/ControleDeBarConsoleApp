@@ -15,11 +15,11 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloEstoque
         {
             Console.Clear();
 
-            MostrarCabecalho(80, "Estoque", ConsoleColor.DarkCyan);
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            MostrarCabecalho(75, "Estoque", ConsoleColor.DarkMagenta);
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
             string espacamento = "{0, -5} │ {1, -30} │ {2, -15} │ {3, -18}";
             Console.WriteLine(espacamento, "ID", "Nome", "Quantidade", "Valor");
-            Console.WriteLine("".PadRight(82, '―'));
+            Console.WriteLine("".PadRight(77, '―'));
             Console.ResetColor();
 
             foreach (Estoque estoque in repositorioEstoque.ObterListaRegistros())

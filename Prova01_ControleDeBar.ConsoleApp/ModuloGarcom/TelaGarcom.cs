@@ -15,8 +15,8 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloGarcom
         {
             Console.Clear();
 
-            MostrarCabecalho(80, "Garçons", ConsoleColor.DarkCyan);
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            MostrarCabecalho(80, "Garçons", ConsoleColor.DarkYellow);
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             string espacamento = "{0, -5} │ {1, -30} │ {2, -20} │ {3, -18}";
             Console.WriteLine(espacamento, "ID", "Nome", "CPF", "Telefone");
             Console.WriteLine("".PadRight(82, '―'));

@@ -15,18 +15,29 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloMesa
         {
             Console.Clear();
 
-            MostrarCabecalho(80, "Mesas", ConsoleColor.DarkCyan);
+            MostrarCabecalho(67, "Mesas", ConsoleColor.DarkCyan);
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            string espacamento = "{0, -5} │ {1, -15} │ {2, -20}";
-            Console.WriteLine(espacamento, "ID", "Número", "Setor");
-            Console.WriteLine("".PadRight(82, '―'));
+            string espacamento = "{0, -5} │ {1, -15} │ {2, -20} │ ";
+            Console.Write(espacamento, "ID", "Número", "Setor");
+            Console.WriteLine("{0, -20}", "Estado");
+            Console.WriteLine("".PadRight(69, '―'));
             Console.ResetColor();
 
             foreach (Mesa mesa in repositorioMesa.ObterListaRegistros())
             {
                 TextoZebrado();
 
-                Console.WriteLine(espacamento, "#" + mesa.id, mesa.numero, mesa.setor);
+                Console.Write(espacamento, "#" + mesa.id, mesa.numero, mesa.setor);
+
+                if(mesa.ocupado)
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                else
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                Console.WriteLine("{0, -20}", mesa.ocupado ? "OCUPADO" : "VAGO");
+
+                Console.ForegroundColor = ConsoleColor.White;
+
             }
 
             Console.ResetColor();

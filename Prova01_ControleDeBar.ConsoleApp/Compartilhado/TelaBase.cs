@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System.Collections;
+﻿using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado

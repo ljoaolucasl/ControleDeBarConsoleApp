@@ -39,5 +39,14 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             return totalFaturado;
         }
+
+        public EntidadeBase SelecionarIdContasAbertas(int idEscolhido)
+        {
+            foreach (EntidadeBase registro in ListaOrganizadaPorEstado())
+                if (registro.id == idEscolhido)
+                    return registro;
+
+            return null;
+        }
     }
 }
