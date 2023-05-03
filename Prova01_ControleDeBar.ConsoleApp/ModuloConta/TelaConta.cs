@@ -288,11 +288,15 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         {
             Console.Clear();
 
-            MostrarCabecalho(80, "Total Faturado", ConsoleColor.White);
+            MostrarCabecalho(80, "Total Faturado", ConsoleColor.DarkGreen);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("".PadRight(82, '―'));
             Console.ResetColor();
 
-            Console.WriteLine("O Total Faturado hoje foi R$" + repositorioConta.ObterTotalFaturado());
+            Console.Write("O Total Faturado hoje foi R$");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(repositorioConta.ObterTotalFaturado());
+            Console.ResetColor();
         }
 
         private void VisualizarContaEmAberto()
