@@ -41,12 +41,13 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 Console.ResetColor();
                 PulaLinha();
                 Console.WriteLine($"(1)Visualizar {tipo}");
-                Console.WriteLine($"(2)Adicionar {tipo}");
-                Console.WriteLine($"(3)Editar {tipo}");
-                Console.WriteLine($"(4)Excluir {tipo}");
-                Console.WriteLine($"(5)Fechar {tipo}");
-                Console.WriteLine($"(6)Visualizar {tipo} em Aberto");
-                Console.WriteLine($"(7)Visualizar Total Faturado Hoje");
+                Console.WriteLine($"(2)Registrar Pedido");
+                Console.WriteLine($"(3)Adicionar {tipo}");
+                Console.WriteLine($"(4)Editar {tipo}");
+                Console.WriteLine($"(5)Excluir {tipo}");
+                Console.WriteLine($"(6)Fechar {tipo}");
+                Console.WriteLine($"(7)Visualizar {tipo} em Aberto");
+                Console.WriteLine($"(8)Visualizar Total Faturado Hoje");
                 PulaLinha();
                 Console.WriteLine("(S)Sair");
                 PulaLinha();
@@ -54,71 +55,6 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
                 continuar = InicializarOpcaoEscolhida(tipoRepositorio);
             }
-        }
-
-        protected override bool InicializarOpcaoEscolhida(RepositorioBase tipoRepositorio)
-        {
-            string entrada = Console.ReadLine();
-
-            switch (entrada.ToUpper())
-            {
-                case "1": VisualizarRegistro(); Console.ReadLine(); break;
-                case "2": AdicionarRegistro(tipoRepositorio); break;
-                case "3": EditarRegistro(tipoRepositorio); break;
-                case "4": ExcluirRegistro(tipoRepositorio); break;
-                case "5": FecharConta(); break;
-                case "6": VisualizarContaEmAberto(); Console.ReadLine(); break;
-                case "7": VisualizarTotalFaturadoDia(); Console.ReadLine(); break;
-                case "S": return false;
-                default: break;
-            }
-            return true;
-        }
-
-        private void VisualizarTotalFaturadoDia()
-        {
-            Console.Clear();
-
-            MostrarCabecalho(80, "Total Faturado", ConsoleColor.White);
-            Console.WriteLine("".PadRight(82, '―'));
-            Console.ResetColor();
-
-            Console.WriteLine("O Total Faturado hoje foi R$" + repositorioConta.ObterTotalFaturado());
-        }
-
-        private void VisualizarContaEmAberto()
-        {
-            Console.Clear();
-
-            MostrarCabecalho(90, "Contas", ConsoleColor.DarkYellow);
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            string espacamento = "{0, -5} │ {1, -15} │ {2, -30} │ {3, -15} │ ";
-            Console.Write(espacamento, "ID", "Número da Mesa", "Garçom", "Valor Total");
-            Console.WriteLine("{0, -15}", "Estado");
-            Console.WriteLine("".PadRight(92, '―'));
-            Console.ResetColor();
-
-            foreach (Conta conta in repositorioConta.ListaOrganizadaPorEstado())
-            {
-                conta.valorTotal = repositorioConta.CalcularValorTotal(conta);
-
-                TextoZebrado();
-
-                Console.Write(espacamento, "#" + conta.id, conta.mesa.numero, conta.garcom.nome, "R$" + conta.valorTotal);
-
-                if (conta.estado) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
-
-                else { Console.ForegroundColor = ConsoleColor.Green; }
-
-                Console.WriteLine("{0, -15}", conta.estado == true ? "ABERTO" : "FATURADO");
-
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-
-            Console.ResetColor();
-            zebrado = true;
-
-            PulaLinha();
         }
 
         public override void VisualizarRegistro()
@@ -156,6 +92,26 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             PulaLinha();
         }
 
+        protected override bool InicializarOpcaoEscolhida(RepositorioBase tipoRepositorio)
+        {
+            string entrada = Console.ReadLine();
+
+            switch (entrada.ToUpper())
+            {
+                case "1": VisualizarRegistro(); Console.ReadLine(); break;
+                case "2": RegistrarPedido(); break;
+                case "3": AdicionarRegistro(tipoRepositorio); break;
+                case "4": EditarRegistro(tipoRepositorio); break;
+                case "5": ExcluirRegistro(tipoRepositorio); break;
+                case "6": FecharConta(); break;
+                case "7": VisualizarContaEmAberto(); Console.ReadLine(); break;
+                case "8": VisualizarTotalFaturadoDia(); Console.ReadLine(); break;
+                case "S": return false;
+                default: break;
+            }
+            return true;
+        }
+
         protected override void AdicionarRegistro(RepositorioBase tipoRepositorio)
         {
             VisualizarRegistro();
@@ -167,8 +123,6 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             if (ValidaValorNull(conta))
             {
                 repositorio.Adicionar(conta);
-
-                conta.pedido.estoque.quantidade -= conta.pedido.quantidade;
 
                 conta.mesa.ocupado = true;
 
@@ -194,13 +148,19 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
                 if (ValidaValorNull(contaAtualizada))
                 {
-                    contaAntiga.pedido.estoque.quantidade += contaAntiga.pedido.quantidade;
+                    foreach (Pedido pedido in contaAntiga.pedidos)
+                    {
+                        pedido.estoque.quantidade += pedido.quantidade;
+                    }
 
                     contaAntiga.mesa.ocupado = false;
 
                     tipoRepositorio.Editar(contaAntiga, contaAtualizada);
 
-                    contaAtualizada.pedido.estoque.quantidade -= contaAtualizada.pedido.quantidade;
+                    foreach (Pedido pedido in contaAtualizada.pedidos)
+                    {
+                        pedido.estoque.quantidade -= pedido.quantidade;
+                    }
 
                     contaAtualizada.mesa.ocupado = true;
 
@@ -223,7 +183,10 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             {
                 Conta conta = (Conta)ObterId(tipoRepositorio, "Digite o ID do Item que deseja excluir: ");
 
-                conta.pedido.estoque.quantidade += conta.pedido.quantidade;
+                foreach (Pedido pedido in conta.pedidos)
+                {
+                    pedido.estoque.quantidade += pedido.quantidade;
+                }
 
                 conta.mesa.ocupado = false;
 
@@ -241,7 +204,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         {
             VisualizarContaEmAberto();
 
-            if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstado()))
+            if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstadoAberto()))
             {
                 Conta conta = (Conta)ObterIdContasAbertas("Digite o ID da Conta que deseja fechar: ");
 
@@ -261,7 +224,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         {
             Conta conta;
 
-            if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstado()))
+            if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstadoAberto()))
             {
                 while (true)
                 {
@@ -283,6 +246,22 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         {
             Pedido pedido = new();
 
+            Conta conta = new()
+            {
+                mesa = ObterMesa(),
+                garcom = ObterGarcom(),
+                pedido = pedido
+            };
+
+            return conta;
+        }
+
+        private void RegistrarPedido()
+        {
+            Conta conta = ObterConta();
+
+            Pedido pedido = new();
+
             pedido.estoque = ObterEstoque();
             do
             {
@@ -293,14 +272,62 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             } while (pedido.quantidade > pedido.estoque.quantidade);
 
-            Conta conta = new()
+            if (conta != null)
             {
-                mesa = ObterMesa(),
-                garcom = ObterGarcom(),
-                pedido = pedido
-            };
+                repositorioConta.AddPedido(pedido, conta);
+                pedido.estoque.quantidade -= pedido.quantidade;
+                MensagemColor($"\nPedido adicionado com sucesso!", ConsoleColor.Green);
+            }
+            else
+                MensagemColor($"\nNão foi selecionado uma conta, verifique se há ao menos uma conta em Aberto\n", ConsoleColor.DarkYellow);
 
-            return conta;
+            Console.ReadLine();
+        }
+
+        private void VisualizarTotalFaturadoDia()
+        {
+            Console.Clear();
+
+            MostrarCabecalho(80, "Total Faturado", ConsoleColor.White);
+            Console.WriteLine("".PadRight(82, '―'));
+            Console.ResetColor();
+
+            Console.WriteLine("O Total Faturado hoje foi R$" + repositorioConta.ObterTotalFaturado());
+        }
+
+        private void VisualizarContaEmAberto()
+        {
+            Console.Clear();
+
+            MostrarCabecalho(90, "Contas", ConsoleColor.DarkYellow);
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            string espacamento = "{0, -5} │ {1, -15} │ {2, -30} │ {3, -15} │ ";
+            Console.Write(espacamento, "ID", "Número da Mesa", "Garçom", "Valor Total");
+            Console.WriteLine("{0, -15}", "Estado");
+            Console.WriteLine("".PadRight(92, '―'));
+            Console.ResetColor();
+
+            foreach (Conta conta in repositorioConta.ListaOrganizadaPorEstadoAberto())
+            {
+                conta.valorTotal = repositorioConta.CalcularValorTotal(conta);
+
+                TextoZebrado();
+
+                Console.Write(espacamento, "#" + conta.id, conta.mesa.numero, conta.garcom.nome, "R$" + conta.valorTotal);
+
+                if (conta.estado) { Console.ForegroundColor = ConsoleColor.DarkYellow; }
+
+                else { Console.ForegroundColor = ConsoleColor.Green; }
+
+                Console.WriteLine("{0, -15}", conta.estado == true ? "ABERTO" : "FATURADO");
+
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            Console.ResetColor();
+            zebrado = true;
+
+            PulaLinha();
         }
 
         private Estoque ObterEstoque()
@@ -345,6 +372,19 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 garcom = (Garcom)ObterId(repositorioGarcom, "Digite o ID do Garcom: ");
             }
             return garcom;
+        }
+
+        private Conta ObterConta()
+        {
+            VisualizarContaEmAberto();
+
+            Conta conta = null;
+
+            if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstadoAberto()))
+            {
+                conta = (Conta)ObterIdContasAbertas("Digite o ID da Conta: ");
+            }
+            return conta;
         }
     }
 }

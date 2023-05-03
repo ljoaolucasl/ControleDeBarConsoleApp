@@ -1,4 +1,5 @@
 ﻿using Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado;
+using Prova01_ControleDeBar.ConsoleApp.ModuloPedido;
 using System.Collections;
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
@@ -12,10 +13,17 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
         public double CalcularValorTotal(Conta conta)
         {
-            return conta.pedido.estoque.valor * conta.pedido.quantidade;
+            double total = 0;
+
+            foreach (Pedido pedido in conta.pedidos)
+            {
+                total += pedido.estoque.valor * pedido.quantidade;
+            }
+
+            return total;
         }
 
-        public ArrayList ListaOrganizadaPorEstado()
+        public ArrayList ListaOrganizadaPorEstadoAberto()
         {
             ArrayList listaOrganizada = new();
 
@@ -42,11 +50,16 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
         public EntidadeBase SelecionarIdContasAbertas(int idEscolhido)
         {
-            foreach (EntidadeBase registro in ListaOrganizadaPorEstado())
+            foreach (EntidadeBase registro in ListaOrganizadaPorEstadoAberto())
                 if (registro.id == idEscolhido)
                     return registro;
 
             return null;
+        }
+
+        public void AddPedido(Pedido pedido, Conta conta)
+        {
+            conta.pedidos.Add(pedido);
         }
     }
 }
