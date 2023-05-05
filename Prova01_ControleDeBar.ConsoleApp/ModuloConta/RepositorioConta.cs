@@ -8,18 +8,12 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
         public void Fechar(Conta conta)
         {
             conta.estado = false;
-        }
 
-        public double CalcularValorTotal(Conta conta)
-        {
-            double total = 0;
+            FaturaDiaria faturaDiaria = new();
+            faturaDiaria.conta = conta;
+            faturaDiaria.data = DateTime.Now;
 
-            foreach (Pedido pedido in conta.pedidos)
-            {
-                total += pedido.estoque.valor * pedido.quantidade;
-            }
-
-            return total;
+            faturaDiaria.AdicionarFatura(faturaDiaria);
         }
 
         public List<Conta> ListaOrganizadaPorEstadoAberto()
@@ -34,19 +28,6 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             return listaOrganizada;
         }
 
-        public double ObterTotalFaturado()
-        {
-            double totalFaturado = 0;
-
-            foreach (Conta conta in ObterListaRegistros())
-            {
-                if (!conta.estado)
-                    totalFaturado += conta.valorTotal;
-            }
-
-            return totalFaturado;
-        }
-
         public Conta SelecionarIdContasAbertas(int idEscolhido)
         {
             foreach (Conta registro in ListaOrganizadaPorEstadoAberto())
@@ -56,9 +37,21 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             return null;
         }
 
-        public void AddPedido(Pedido pedido, Conta conta)
+        public void AdicionarPedido(Pedido pedido, Conta conta)
         {
             conta.pedidos.Add(pedido);
+            ObterTotalGastoConta(conta);
+        }
+
+        private void ObterTotalGastoConta(Conta conta)
+        {
+            double valorTotal = 0;
+
+            foreach (Pedido pedido in conta.pedidos)
+            {
+                valorTotal += pedido.estoque.valor * pedido.quantidade;
+            }
+            conta.valorTotal = valorTotal;
         }
     }
 }

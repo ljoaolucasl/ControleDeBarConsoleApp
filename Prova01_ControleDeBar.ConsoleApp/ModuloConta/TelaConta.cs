@@ -79,8 +79,6 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             foreach (Conta conta in repositorioConta.ObterListaRegistros())
             {
-                conta.valorTotal = repositorioConta.CalcularValorTotal(conta);
-
                 TextoZebrado();
 
                 Console.Write(espacamento, "#" + conta.id, conta.mesa.numero, conta.garcom.nome, "R$" + conta.valorTotal);
@@ -114,7 +112,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 case "6": VisualizarContaEmAberto(); Console.ReadLine(); break;
                 case "7": RegistrarPedido(); break;
                 case "8": VisualizarPedidos(); Console.ReadLine(); break;
-                case "9": VisualizarTotalFaturadoDia(); Console.ReadLine(); break;
+                case "9": VisualizarFaturamento(); Console.ReadLine(); break;
                 case "S": return false;
                 default: break;
             }
@@ -283,7 +281,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             if (conta != null)
             {
-                repositorioConta.AddPedido(pedido, conta);
+                repositorioConta.AdicionarPedido(pedido, conta);
                 pedido.estoque.quantidade -= pedido.quantidade;
                 MensagemColor($"\nPedido adicionado com sucesso!", ConsoleColor.Green);
             }
@@ -299,25 +297,22 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             if (conta != null)
             {
-
                 Console.Clear();
 
                 MostrarCabecalho(80, $"Pedidos Mesa #{conta.mesa.numero}", ConsoleColor.DarkCyan);
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                string espacamento = "{0, -5} │ {1, -20} │ {2, -15} │ {3, -15} │ {4, -15}";
-                Console.WriteLine(espacamento, "ID", "Produto", "Quantidade", "Valor Uni.", "Valor Total");
+                string espacamento = "{0, -20} │ {1, -15} │ {2, -15} │ {3, -15}";
+                Console.WriteLine(espacamento, "Produto", "Quantidade", "Valor Uni.", "Valor Total");
                 Console.WriteLine("".PadRight(82, '―'));
                 Console.ResetColor();
 
                 foreach (Pedido pedido in conta.pedidos)
                 {
-                    conta.valorTotal = repositorioConta.CalcularValorTotal(conta);
-
                     double totalQtdValor = pedido.estoque.valor * pedido.quantidade;
 
                     TextoZebrado();
 
-                    Console.WriteLine(espacamento, "#" + pedido.id, pedido.estoque.nome, pedido.quantidade, "R$" + pedido.estoque.valor, "R$" + totalQtdValor);
+                    Console.WriteLine(espacamento, pedido.estoque.nome, pedido.quantidade, "R$" + pedido.estoque.valor, "R$" + totalQtdValor);
                 }
 
                 Console.ResetColor();
@@ -327,24 +322,42 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 Console.WriteLine("TOTAL: R$" + conta.valorTotal);
 
                 PulaLinha();
-            } 
+            }
             else
                 MensagemColor($"\nNão foi selecionado uma conta, verifique se há ao menos uma conta cadastrada\n", ConsoleColor.DarkYellow);
         }
 
-        private void VisualizarTotalFaturadoDia()
+        private void VisualizarFaturamento()
         {
             Console.Clear();
 
-            MostrarCabecalho(80, "Total Faturado", ConsoleColor.DarkGreen);
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("".PadRight(82, '―'));
+            FaturaDiaria faturaDiaria = new();
+
+            DateTime data = ValidaData("Digite uma Data para ver o Total Faturado: ");
+
+            MostrarCabecalho(74, "Faturamento", ConsoleColor.DarkMagenta);
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            string espacamento = "{0, -12} │ {1, -10} │ {2, -30} │ {3, -15}";
+            Console.WriteLine(espacamento, "Data", "Mesa", "Garçom", "Valor Total");
+            Console.WriteLine("".PadRight(76, '―'));
             Console.ResetColor();
 
-            Console.Write("O Total Faturado hoje foi R$");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(repositorioConta.ObterTotalFaturado());
+            foreach (FaturaDiaria fatura in faturaDiaria.ObterListaFatura())
+            {
+                if (data.ToString("d") == fatura.data.ToString("d"))
+                {
+                    TextoZebrado();
+
+                    Console.WriteLine(espacamento, fatura.data.ToString("d"), fatura.conta.mesa.numero, fatura.conta.garcom.nome, "R$" + fatura.conta.valorTotal);
+                }
+            }
+
             Console.ResetColor();
+            zebrado = true;
+
+            PulaLinha();
+
+            Console.WriteLine("Total: R$" + faturaDiaria.ObterTotalFaturado(data));
         }
 
         private void VisualizarContaEmAberto()
@@ -361,8 +374,6 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             foreach (Conta conta in repositorioConta.ListaOrganizadaPorEstadoAberto())
             {
-                conta.valorTotal = repositorioConta.CalcularValorTotal(conta);
-
                 TextoZebrado();
 
                 Console.Write(espacamento, "#" + conta.id, conta.mesa.numero, conta.garcom.nome, "R$" + conta.valorTotal);
