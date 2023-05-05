@@ -2,7 +2,7 @@
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloMesa
 {
-    public class TelaMesa : TelaBase
+    public class TelaMesa : TelaBase<RepositorioMesa, Mesa>
     {
         private RepositorioMesa repositorioMesa;
 
@@ -46,7 +46,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloMesa
             PulaLinha();
         }
 
-        protected override EntidadeBase ObterCadastro()
+        protected override Mesa ObterCadastro()
         {
             Mesa mesa = new()
             {

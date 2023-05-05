@@ -6,7 +6,7 @@ using Prova01_ControleDeBar.ConsoleApp.ModuloPedido;
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 {
-    public class TelaConta : TelaBase
+    public class TelaConta : TelaBase<RepositorioConta, Conta>
     {
         private RepositorioConta repositorioConta;
         private RepositorioGarcom repositorioGarcom;
@@ -28,7 +28,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             this.telaEstoque = telaEstoque;
         }
 
-        public override void MostrarMenu(string tipo, ConsoleColor cor, RepositorioBase tipoRepositorio)
+        public override void MostrarMenu(string tipo, ConsoleColor cor, RepositorioConta tipoRepositorio)
         {
             bool continuar = true;
 
@@ -100,7 +100,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             PulaLinha();
         }
 
-        protected override bool InicializarOpcaoEscolhida(RepositorioBase tipoRepositorio)
+        protected override bool InicializarOpcaoEscolhida(RepositorioConta tipoRepositorio)
         {
             string entrada = Console.ReadLine();
 
@@ -121,13 +121,13 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             return true;
         }
 
-        protected override void AdicionarRegistro(RepositorioBase tipoRepositorio)
+        protected override void AdicionarRegistro(RepositorioConta tipoRepositorio)
         {
             VisualizarRegistro();
 
-            RepositorioBase repositorio = tipoRepositorio;
+            RepositorioConta repositorio = tipoRepositorio;
 
-            Conta conta = (Conta)ObterCadastro();
+            Conta conta = ObterCadastro();
 
             if (ValidaValorNull(conta))
             {
@@ -145,15 +145,15 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             Console.ReadLine();
         }
 
-        protected override void EditarRegistro(RepositorioBase tipoRepositorio)
+        protected override void EditarRegistro(RepositorioConta tipoRepositorio)
         {
             VisualizarRegistro();
 
             if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
             {
-                Conta contaAntiga = (Conta)ObterId(tipoRepositorio, "Digite o ID do Item que deseja editar: ");
+                Conta contaAntiga = ObterId(tipoRepositorio, "Digite o ID do Item que deseja editar: ");
 
-                Conta contaAtualizada = (Conta)ObterCadastro();
+                Conta contaAtualizada = ObterCadastro();
 
                 if (ValidaValorNull(contaAtualizada))
                 {
@@ -184,13 +184,13 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             Console.ReadLine();
         }
 
-        protected override void ExcluirRegistro(RepositorioBase tipoRepositorio)
+        protected override void ExcluirRegistro(RepositorioConta tipoRepositorio)
         {
             VisualizarRegistro();
 
             if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
             {
-                Conta conta = (Conta)ObterId(tipoRepositorio, "Digite o ID do Item que deseja excluir: ");
+                Conta conta = ObterId(tipoRepositorio, "Digite o ID do Item que deseja excluir: ");
 
                 foreach (Pedido pedido in conta.pedidos)
                 {
@@ -209,13 +209,27 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             Console.ReadLine();
         }
 
-        protected virtual void FecharConta()
+        protected override Conta ObterCadastro()
+        {
+            Pedido pedido = new();
+
+            Conta conta = new()
+            {
+                mesa = ObterMesa(),
+                garcom = ObterGarcom(),
+                pedido = pedido
+            };
+
+            return conta;
+        }
+
+        private void FecharConta()
         {
             VisualizarContaEmAberto();
 
             if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstadoAberto()))
             {
-                Conta conta = (Conta)ObterIdContasAbertas("Digite o ID da Conta que deseja fechar: ");
+                Conta conta = ObterIdContasAbertas("Digite o ID da Conta que deseja fechar: ");
 
                 conta.mesa.ocupado = false;
 
@@ -229,7 +243,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             Console.ReadLine();
         }
 
-        protected EntidadeBase ObterIdContasAbertas(string mensagem)
+        private Conta ObterIdContasAbertas(string mensagem)
         {
             Conta conta;
 
@@ -239,7 +253,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 {
                     int idEscolhido = ValidaNumero(mensagem);
 
-                    conta = (Conta)repositorioConta.SelecionarIdContasAbertas(idEscolhido);
+                    conta = repositorioConta.SelecionarIdContasAbertas(idEscolhido);
 
                     if (conta == null)
                         MensagemColor("Atenção, apenas ID`s existentes\n", ConsoleColor.Red);
@@ -249,20 +263,6 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
                 }
             }
             return null;
-        }
-
-        protected override EntidadeBase ObterCadastro()
-        {
-            Pedido pedido = new();
-
-            Conta conta = new()
-            {
-                mesa = ObterMesa(),
-                garcom = ObterGarcom(),
-                pedido = pedido
-            };
-
-            return conta;
         }
 
         private void RegistrarPedido()
@@ -387,9 +387,9 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             telaEstoque.VisualizarRegistro();
             Estoque estoque = null;
 
-            if (ValidaListaVazia(repositorioEstoque.ObterListaRegistros()))
+            if (telaEstoque.ValidaListaVazia(repositorioEstoque.ObterListaRegistros()))
             {
-                estoque = (Estoque)ObterId(repositorioEstoque, "Digite o ID do Produto: ");
+                estoque = telaEstoque.ObterId(repositorioEstoque, "Digite o ID do Produto: ");
             }
             return estoque;
         }
@@ -406,9 +406,9 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             Mesa mesa = null;
 
-            if (ValidaListaVazia(repositorioMesa.ObterListaRegistros()))
+            if (telaMesa.ValidaListaVazia(repositorioMesa.ObterListaRegistros()))
             {
-                mesa = (Mesa)ObterId(repositorioMesa, "Digite o ID do Mesa: ");
+                mesa = telaMesa.ObterId(repositorioMesa, "Digite o ID do Mesa: ");
             }
             return mesa;
         }
@@ -419,9 +419,9 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             Garcom garcom = null;
 
-            if (ValidaListaVazia(repositorioGarcom.ObterListaRegistros()))
+            if (telaGarcom.ValidaListaVazia(repositorioGarcom.ObterListaRegistros()))
             {
-                garcom = (Garcom)ObterId(repositorioGarcom, "Digite o ID do Garcom: ");
+                garcom = telaGarcom.ObterId(repositorioGarcom, "Digite o ID do Garcom: ");
             }
             return garcom;
         }
@@ -434,7 +434,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
             if (ValidaListaVazia(repositorioConta.ListaOrganizadaPorEstadoAberto()))
             {
-                conta = (Conta)ObterIdContasAbertas("Digite o ID da Conta: ");
+                conta = ObterIdContasAbertas("Digite o ID da Conta: ");
             }
             return conta;
         }

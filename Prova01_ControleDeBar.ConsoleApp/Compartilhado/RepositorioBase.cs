@@ -1,20 +1,18 @@
-﻿using System.Collections;
-
-namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
+﻿namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
 {
-    public abstract class RepositorioBase
+    public abstract class RepositorioBase<TEntidade> where TEntidade : EntidadeBase
     {
-        private ArrayList listaRegistros = new ArrayList();
+        private List<TEntidade> listaRegistros = new();
 
         private int id = 1;
 
-        public void Adicionar(EntidadeBase registro)
+        public void Adicionar(TEntidade registro)
         {
             registro.id = id; id++;
             listaRegistros.Add(registro);
         }
 
-        public void Editar(EntidadeBase registroAntigo, EntidadeBase registroNovo)
+        public void Editar(TEntidade registroAntigo, TEntidade registroNovo)
         {
             if (registroAntigo != null)
             {
@@ -28,7 +26,7 @@ namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
             }
         }
 
-        public void Excluir(EntidadeBase registroSelecionado)
+        public void Excluir(TEntidade registroSelecionado)
         {
             if (registroSelecionado != null)
             {
@@ -38,21 +36,21 @@ namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
             }
         }
 
-        public EntidadeBase SelecionarId(int idEscolhido)
+        public TEntidade SelecionarId(int idEscolhido)
         {
-            foreach (EntidadeBase registro in listaRegistros)
+            foreach (TEntidade registro in listaRegistros)
                 if (registro.id == idEscolhido)
                     return registro;
 
             return null;
         }
 
-        public ArrayList ObterListaRegistros()
+        public List<TEntidade> ObterListaRegistros()
         {
             return listaRegistros;
         }
 
-        public void PreCadastrarTestes(EntidadeBase entidade)
+        public void PreCadastrarTestes(TEntidade entidade)
         {
             Type tipoEntidade = entidade.GetType();
 

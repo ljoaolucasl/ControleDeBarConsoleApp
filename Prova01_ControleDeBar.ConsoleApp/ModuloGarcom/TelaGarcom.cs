@@ -2,7 +2,7 @@
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloGarcom
 {
-    public class TelaGarcom : TelaBase
+    public class TelaGarcom : TelaBase<RepositorioGarcom, Garcom>
     {
         private RepositorioGarcom repositorioGarcom;
 
@@ -35,7 +35,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloGarcom
             PulaLinha();
         }
 
-        protected override EntidadeBase ObterCadastro()
+        protected override Garcom ObterCadastro()
         {
             Garcom garcom = new()
             {

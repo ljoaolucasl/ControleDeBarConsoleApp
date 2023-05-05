@@ -2,7 +2,7 @@
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloEstoque
 {
-    public class TelaEstoque : TelaBase
+    public class TelaEstoque : TelaBase<RepositorioEstoque, Estoque>
     {
         private RepositorioEstoque repositorioEstoque;
 
@@ -35,7 +35,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloEstoque
             PulaLinha();
         }
 
-        protected override EntidadeBase ObterCadastro()
+        protected override Estoque ObterCadastro()
         {
             Estoque estoque = new()
             {

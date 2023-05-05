@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
 {
-    public abstract class TelaBase
+    public abstract class TelaBase<TRepositorio, TEntidade>
+        where TRepositorio : RepositorioBase<TEntidade>
+        where TEntidade : EntidadeBase
     {
-        public virtual void MostrarMenu(string tipo, ConsoleColor cor, RepositorioBase tipoRepositorio)
+        public virtual void MostrarMenu(string tipo, ConsoleColor cor, TRepositorio tipoRepositorio)
         {
             bool continuar = true;
 
@@ -32,92 +33,9 @@ namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
 
         public abstract void VisualizarRegistro();
 
-        protected virtual bool InicializarOpcaoEscolhida(RepositorioBase tipoRepositorio)
+        public TEntidade ObterId(TRepositorio tipoRepositorio, string mensagem)
         {
-            string entrada = Console.ReadLine();
-
-            switch (entrada.ToUpper())
-            {
-                case "1": VisualizarRegistro(); Console.ReadLine(); break;
-                case "2": AdicionarRegistro(tipoRepositorio); break;
-                case "3": EditarRegistro(tipoRepositorio); break;
-                case "4": ExcluirRegistro(tipoRepositorio); break;
-                case "S": return false;
-                default: break;
-            }
-            return true;
-        }
-
-        protected virtual void AdicionarRegistro(RepositorioBase tipoRepositorio)
-        {
-            VisualizarRegistro();
-
-            RepositorioBase repositorio = tipoRepositorio;
-
-            EntidadeBase registro = ObterCadastro();
-
-            if (ValidaValorNull(registro))
-            {
-                repositorio.Adicionar(registro);
-
-                VisualizarRegistro();
-
-                MensagemColor($"\nCadastro adicionado com sucesso!", ConsoleColor.Green);
-            }
-            else
-                MensagemColor($"\nCadastro incompleto, retornando ao Menu . . .", ConsoleColor.DarkYellow);
-
-            Console.ReadLine();
-        }
-
-        protected virtual void EditarRegistro(RepositorioBase tipoRepositorio)
-        {
-            VisualizarRegistro();
-
-            if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
-            {
-                EntidadeBase registroAntigo = ObterId(tipoRepositorio, "Digite o ID do Item que deseja editar: ");
-
-                EntidadeBase registroAtualizado = ObterCadastro();
-
-                if (ValidaValorNull(registroAtualizado))
-                {
-                    tipoRepositorio.Editar(registroAntigo, registroAtualizado);
-
-                    VisualizarRegistro();
-
-                    MensagemColor("\nItem editado com sucesso!", ConsoleColor.Green);
-                }
-                else
-                    MensagemColor($"\nCadastro incompleto, retornando ao Menu . . .", ConsoleColor.DarkYellow);
-            }
-
-            Console.ReadLine();
-        }
-
-        protected virtual void ExcluirRegistro(RepositorioBase tipoRepositorio)
-        {
-            VisualizarRegistro();
-
-            if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
-            {
-                EntidadeBase registroEscolhido = ObterId(tipoRepositorio, "Digite o ID do Item que deseja excluir: ");
-
-                tipoRepositorio.Excluir(registroEscolhido);
-
-                VisualizarRegistro();
-
-                MensagemColor("\nItem excluído com sucesso!", ConsoleColor.Green);
-            }
-
-            Console.ReadLine();
-        }
-
-        protected abstract EntidadeBase ObterCadastro();
-
-        protected EntidadeBase ObterId(RepositorioBase tipoRepositorio, string mensagem)
-        {
-            EntidadeBase registro;
+            TEntidade registro;
 
             if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
             {
@@ -137,7 +55,101 @@ namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
             return null;
         }
 
-        protected bool ValidaValorNull(EntidadeBase entidade)
+        public bool ValidaListaVazia(List<TEntidade> lista)
+        {
+            if (lista.Count == 0)
+            {
+                MensagemColor("A Lista está vazia . . .", ConsoleColor.DarkYellow);
+                return false;
+            }
+            else
+                return true;
+        }
+
+        protected virtual bool InicializarOpcaoEscolhida(TRepositorio tipoRepositorio)
+        {
+            string entrada = Console.ReadLine();
+
+            switch (entrada.ToUpper())
+            {
+                case "1": VisualizarRegistro(); Console.ReadLine(); break;
+                case "2": AdicionarRegistro(tipoRepositorio); break;
+                case "3": EditarRegistro(tipoRepositorio); break;
+                case "4": ExcluirRegistro(tipoRepositorio); break;
+                case "S": return false;
+                default: break;
+            }
+            return true;
+        }
+
+        protected virtual void AdicionarRegistro(TRepositorio tipoRepositorio)
+        {
+            VisualizarRegistro();
+
+            TRepositorio repositorio = tipoRepositorio;
+
+            TEntidade registro = ObterCadastro();
+
+            if (ValidaValorNull(registro))
+            {
+                repositorio.Adicionar(registro);
+
+                VisualizarRegistro();
+
+                MensagemColor($"\nCadastro adicionado com sucesso!", ConsoleColor.Green);
+            }
+            else
+                MensagemColor($"\nCadastro incompleto, retornando ao Menu . . .", ConsoleColor.DarkYellow);
+
+            Console.ReadLine();
+        }
+
+        protected virtual void EditarRegistro(TRepositorio tipoRepositorio)
+        {
+            VisualizarRegistro();
+
+            if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
+            {
+                TEntidade registroAntigo = ObterId(tipoRepositorio, "Digite o ID do Item que deseja editar: ");
+
+                TEntidade registroAtualizado = ObterCadastro();
+
+                if (ValidaValorNull(registroAtualizado))
+                {
+                    tipoRepositorio.Editar(registroAntigo, registroAtualizado);
+
+                    VisualizarRegistro();
+
+                    MensagemColor("\nItem editado com sucesso!", ConsoleColor.Green);
+                }
+                else
+                    MensagemColor($"\nCadastro incompleto, retornando ao Menu . . .", ConsoleColor.DarkYellow);
+            }
+
+            Console.ReadLine();
+        }
+
+        protected virtual void ExcluirRegistro(TRepositorio tipoRepositorio)
+        {
+            VisualizarRegistro();
+
+            if (ValidaListaVazia(tipoRepositorio.ObterListaRegistros()))
+            {
+                TEntidade registroEscolhido = ObterId(tipoRepositorio, "Digite o ID do Item que deseja excluir: ");
+
+                tipoRepositorio.Excluir(registroEscolhido);
+
+                VisualizarRegistro();
+
+                MensagemColor("\nItem excluído com sucesso!", ConsoleColor.Green);
+            }
+
+            Console.ReadLine();
+        }
+
+        protected abstract TEntidade ObterCadastro();
+
+        protected bool ValidaValorNull(TEntidade entidade)
         {
             if (entidade != null)
             {
@@ -305,17 +317,6 @@ namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
             } while (!validaData);
 
             return dataAbertura;
-        }
-
-        protected bool ValidaListaVazia(ArrayList lista)
-        {
-            if (lista.Count == 0)
-            {
-                MensagemColor("A Lista está vazia . . .", ConsoleColor.DarkYellow);
-                return false;
-            }
-            else
-                return true;
         }
 
         protected void MostrarCabecalho(int espaco, string texto, ConsoleColor cor)

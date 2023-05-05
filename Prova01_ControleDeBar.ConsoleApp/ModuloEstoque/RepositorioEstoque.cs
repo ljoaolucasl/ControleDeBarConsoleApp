@@ -2,7 +2,7 @@
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloEstoque
 {
-    public class RepositorioEstoque : RepositorioBase
+    public class RepositorioEstoque : RepositorioBase<Estoque>
     {
         public void PreCadastrarEstoques()
         {

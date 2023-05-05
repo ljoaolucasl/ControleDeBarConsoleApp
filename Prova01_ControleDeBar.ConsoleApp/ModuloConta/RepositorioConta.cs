@@ -1,10 +1,9 @@
 ﻿using Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado;
 using Prova01_ControleDeBar.ConsoleApp.ModuloPedido;
-using System.Collections;
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 {
-    public class RepositorioConta : RepositorioBase
+    public class RepositorioConta : RepositorioBase<Conta>
     {
         public void Fechar(Conta conta)
         {
@@ -23,9 +22,9 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             return total;
         }
 
-        public ArrayList ListaOrganizadaPorEstadoAberto()
+        public List<Conta> ListaOrganizadaPorEstadoAberto()
         {
-            ArrayList listaOrganizada = new();
+            List<Conta> listaOrganizada = new();
 
             foreach (Conta conta in ObterListaRegistros())
             {
@@ -48,9 +47,9 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
             return totalFaturado;
         }
 
-        public EntidadeBase SelecionarIdContasAbertas(int idEscolhido)
+        public Conta SelecionarIdContasAbertas(int idEscolhido)
         {
-            foreach (EntidadeBase registro in ListaOrganizadaPorEstadoAberto())
+            foreach (Conta registro in ListaOrganizadaPorEstadoAberto())
                 if (registro.id == idEscolhido)
                     return registro;
 

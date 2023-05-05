@@ -2,7 +2,7 @@
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloMesa
 {
-    public class RepositorioMesa : RepositorioBase
+    public class RepositorioMesa : RepositorioBase<Mesa>
     {
         public void PreCadastrarMesas()
         {
