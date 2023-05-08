@@ -1,6 +1,4 @@
-﻿using Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado;
-
-namespace Prova01_ControleDeBar.ConsoleApp.ModuloMesa
+﻿namespace Prova01_ControleDeBar.ConsoleApp.ModuloMesa
 {
     public class TelaMesa : TelaBase<RepositorioMesa, Mesa>
     {

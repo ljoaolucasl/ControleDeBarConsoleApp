@@ -2,8 +2,6 @@
 {
     public class FaturaDiaria
     {
-        private TelaConta telaConta;
-
         private static List<FaturaDiaria> faturasDiarias = new();
 
         public Conta conta;

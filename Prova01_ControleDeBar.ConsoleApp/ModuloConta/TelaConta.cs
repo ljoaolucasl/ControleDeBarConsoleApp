@@ -1,5 +1,4 @@
-﻿using Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado;
-using Prova01_ControleDeBar.ConsoleApp.ModuloEstoque;
+﻿using Prova01_ControleDeBar.ConsoleApp.ModuloEstoque;
 using Prova01_ControleDeBar.ConsoleApp.ModuloGarcom;
 using Prova01_ControleDeBar.ConsoleApp.ModuloMesa;
 using Prova01_ControleDeBar.ConsoleApp.ModuloPedido;

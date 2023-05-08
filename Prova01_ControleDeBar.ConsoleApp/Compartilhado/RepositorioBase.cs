@@ -1,4 +1,4 @@
-﻿namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
+﻿namespace Prova01_ControleDeBar.ConsoleApp.Compartilhado
 {
     public abstract class RepositorioBase<TEntidade> where TEntidade : EntidadeBase
     {
@@ -30,19 +30,13 @@
         {
             if (registroSelecionado != null)
             {
-                int idIndex = listaRegistros.IndexOf(registroSelecionado);
-
-                listaRegistros.RemoveAt(idIndex);
+                listaRegistros.Remove(registroSelecionado);
             }
         }
 
         public TEntidade SelecionarId(int idEscolhido)
         {
-            foreach (TEntidade registro in listaRegistros)
-                if (registro.id == idEscolhido)
-                    return registro;
-
-            return null;
+            return listaRegistros.Find(e => e.id == idEscolhido);
         }
 
         public List<TEntidade> ObterListaRegistros()

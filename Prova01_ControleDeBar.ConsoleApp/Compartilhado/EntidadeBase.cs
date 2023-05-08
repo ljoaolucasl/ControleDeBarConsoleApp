@@ -1,4 +1,4 @@
-﻿namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
+﻿namespace Prova01_ControleDeBar.ConsoleApp.Compartilhado
 {
     public abstract class EntidadeBase
     {

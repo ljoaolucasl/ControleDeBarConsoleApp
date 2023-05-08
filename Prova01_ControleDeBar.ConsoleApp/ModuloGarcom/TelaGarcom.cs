@@ -1,6 +1,4 @@
-﻿using Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado;
-
-namespace Prova01_ControleDeBar.ConsoleApp.ModuloGarcom
+﻿namespace Prova01_ControleDeBar.ConsoleApp.ModuloGarcom
 {
     public class TelaGarcom : TelaBase<RepositorioGarcom, Garcom>
     {

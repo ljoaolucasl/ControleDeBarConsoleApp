@@ -1,0 +1,1 @@
+﻿global using Prova01_ControleDeBar.ConsoleApp.Compartilhado;

@@ -1,5 +1,4 @@
-﻿using Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado;
-using Prova01_ControleDeBar.ConsoleApp.ModuloPedido;
+﻿using Prova01_ControleDeBar.ConsoleApp.ModuloPedido;
 
 namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 {
@@ -18,23 +17,12 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
         public List<Conta> ListaOrganizadaPorEstadoAberto()
         {
-            List<Conta> listaOrganizada = new();
-
-            foreach (Conta conta in ObterListaRegistros())
-            {
-                if (conta.estado)
-                    listaOrganizada.Add(conta);
-            }
-            return listaOrganizada;
+            return ObterListaRegistros().FindAll(c => c.estado);
         }
 
         public Conta SelecionarIdContasAbertas(int idEscolhido)
         {
-            foreach (Conta registro in ListaOrganizadaPorEstadoAberto())
-                if (registro.id == idEscolhido)
-                    return registro;
-
-            return null;
+            return ListaOrganizadaPorEstadoAberto().Find(e => e.id == idEscolhido);
         }
 
         public void AdicionarPedido(Pedido pedido, Conta conta)
@@ -45,13 +33,7 @@ namespace Prova01_ControleDeBar.ConsoleApp.ModuloConta
 
         private void ObterTotalGastoConta(Conta conta)
         {
-            double valorTotal = 0;
-
-            foreach (Pedido pedido in conta.pedidos)
-            {
-                valorTotal += pedido.estoque.valor * pedido.quantidade;
-            }
-            conta.valorTotal = valorTotal;
+            conta.valorTotal = conta.pedidos.Sum(p => p.estoque.valor * p.quantidade);
         }
     }
 }

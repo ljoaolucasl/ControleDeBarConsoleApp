@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Atividade14_ControleDeMedicamentos.ConsoleApp.Compartilhado
+namespace Prova01_ControleDeBar.ConsoleApp.Compartilhado
 {
     public abstract class TelaBase<TRepositorio, TEntidade>
         where TRepositorio : RepositorioBase<TEntidade>
